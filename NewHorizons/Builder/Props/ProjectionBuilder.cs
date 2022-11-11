@@ -152,7 +152,7 @@ namespace NewHorizons.Builder.Props
             imageLoader.imageLoadedEvent.AddListener(
                 (Texture2D tex, int index) => 
                 { 
-                    slideCollection.slides[index]._image = ImageUtilities.Invert(tex); 
+                    slideCollection.slides[index]._image = ImageUtilities.Invert(mod, tex); 
 
                     // Track the first 15 to put on the slide reel object
                     if (index < textures.Length) 
@@ -236,7 +236,7 @@ namespace NewHorizons.Builder.Props
             var slideCollection = new SlideCollection(slidesCount);
             
             var imageLoader = AddAsyncLoader(projectorObj, mod, info.slides, ref slideCollection);
-            imageLoader.imageLoadedEvent.AddListener((Texture2D tex, int index) => { slideCollection.slides[index]._image = ImageUtilities.Invert(tex); });
+            imageLoader.imageLoadedEvent.AddListener((Texture2D tex, int index) => { slideCollection.slides[index]._image = ImageUtilities.Invert(mod, tex); });
 
             slideCollectionContainer.slideCollection = slideCollection;
 

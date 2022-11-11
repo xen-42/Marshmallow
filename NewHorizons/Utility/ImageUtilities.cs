@@ -1,4 +1,5 @@
 using OWML.Common;
+using OWML.ModHelper;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -85,37 +86,54 @@ namespace NewHorizons.Utility
             _generatedTextures.Clear();
         }
 
-        public static Texture2D Invert(Texture2D texture)
+        public static Texture2D Invert(IModBehaviour mod, Texture2D texture)
         {
-            var pixels = texture.GetPixels();
-            for (int i = 0; i < pixels.Length; i++)
-            {
-                var x = i % texture.width;
-                var y = (int)Mathf.Floor(i / texture.height);
+            var name = texture.name + "Inverted";
 
-                // Needs a black border
-                if (x == 0 || y == 0 || x == texture.width - 1 || y == texture.height - 1)
+            var path = Path.Combine(mod.ModHelper.Manifest.ModFolderPath, "cache", "invert", $"{name}.png");
+
+            Texture2D newTexture;
+
+            if(File.Exists(path))
+            {
+                newTexture = new(1, 1, texture.format, false);
+                newTexture.LoadImage(File.ReadAllBytes(path));
+            }
+            else
+            {
+                var pixels = texture.GetPixels();
+                for (int i = 0; i < pixels.Length; i++)
                 {
-                    pixels[i].r = 1;
-                    pixels[i].g = 1;
-                    pixels[i].b = 1;
-                    pixels[i].a = 1;
+                    var x = i % texture.width;
+                    var y = (int)Mathf.Floor(i / texture.height);
+
+                    // Needs a black border
+                    if (x == 0 || y == 0 || x == texture.width - 1 || y == texture.height - 1)
+                    {
+                        pixels[i].r = 1;
+                        pixels[i].g = 1;
+                        pixels[i].b = 1;
+                        pixels[i].a = 1;
+                    }
+                    else
+                    {
+                        pixels[i].r = 1f - pixels[i].r;
+                        pixels[i].g = 1f - pixels[i].g;
+                        pixels[i].b = 1f - pixels[i].b;
+                    }
                 }
-                else
-                {
-                    pixels[i].r = 1f - pixels[i].r;
-                    pixels[i].g = 1f - pixels[i].g;
-                    pixels[i].b = 1f - pixels[i].b;
-                }
+
+                newTexture = new(texture.width, texture.height);
+                newTexture.SetPixels(pixels);
+                newTexture.Apply();
+
+                var filePath = new FileInfo(path);
+                filePath.Directory.Create();
+                File.WriteAllBytes(path, newTexture.EncodeToPNG());
             }
 
-            var newTexture = new Texture2D(texture.width, texture.height);
-            newTexture.name = texture.name + "Inverted";
-            newTexture.SetPixels(pixels);
-            newTexture.Apply();
-
+            newTexture.name = name;
             newTexture.wrapMode = texture.wrapMode;
-
             _generatedTextures.Add(newTexture);
 
             return newTexture;
@@ -427,6 +445,7 @@ namespace NewHorizons.Utility
                 else
                 {
                     var texture = DownloadHandlerTexture.GetContent(uwr);
+                    texture.name = Path.GetFileNameWithoutExtension(url);
 
                     lock(_loadedTextures)
                     {
