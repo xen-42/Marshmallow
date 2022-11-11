@@ -1,9 +1,10 @@
 {
 	"enabled": true,
-	"settings": {
-		"Debug": false,
-		"Custom title screen": true,
-		"Default System Override": "",
-		"Verbose Logs": false
-	}
+  "settings": {
+    "Debug": false,
+    "Custom title screen": true,
+    "Default System Override": "",
+    "Verbose Logs": false,
+    "Cache Images to Disk": true
+  }
 }

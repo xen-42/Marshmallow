@@ -4,7 +4,6 @@ using NewHorizons.Builder.Body;
 using NewHorizons.Builder.General;
 using NewHorizons.Builder.Props;
 using NewHorizons.Components;
-using NewHorizons.Components.Orbital;
 using NewHorizons.Components.Fixers;
 using NewHorizons.Components.SizeControllers;
 using NewHorizons.External;
@@ -29,7 +28,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Logger = NewHorizons.Utility.Logger;
-using NewHorizons.Components.Stars;
 
 namespace NewHorizons
 {
@@ -45,6 +43,7 @@ namespace NewHorizons
         private static bool _useCustomTitleScreen;
         private static bool _wasConfigured = false;
         private static string _defaultSystemOverride;
+        public static bool CacheImagesToDisk { get; private set; }
 
         public static Dictionary<string, NewHorizonsSystem> SystemDict = new Dictionary<string, NewHorizonsSystem>();
         public static Dictionary<string, List<NewHorizonsBody>> BodyDict = new Dictionary<string, List<NewHorizonsBody>>();
@@ -93,6 +92,7 @@ namespace NewHorizons
 
             Debug = config.GetSettingsValue<bool>("Debug");
             VerboseLogs = config.GetSettingsValue<bool>("Verbose Logs");
+            CacheImagesToDisk = config.GetSettingsValue<bool>("Cache Images to Disk");
 
             if (currentScene == "SolarSystem")
             {

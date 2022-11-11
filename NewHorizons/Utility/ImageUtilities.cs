@@ -94,7 +94,7 @@ namespace NewHorizons.Utility
 
             Texture2D newTexture;
 
-            if(File.Exists(path))
+            if (File.Exists(path) && Main.CacheImagesToDisk)
             {
                 newTexture = new(1, 1, texture.format, false);
                 newTexture.LoadImage(File.ReadAllBytes(path));
